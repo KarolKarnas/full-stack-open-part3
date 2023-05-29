@@ -1,0 +1,22 @@
+# fly.toml app configuration file generated for little-sun-1623 on 2023-05-29T12:57:52+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "little-sun-1623"
+primary_region = "waw"
+
+[env]
+  PORT = "8080"
+
+[experimental]
+  auto_rollback = true
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  http_checks = []
+  processes = ["app"]
