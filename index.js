@@ -88,22 +88,23 @@ app.post('/api/persons', (request, response) => {
 		return response.status(400).json({
 			error: 'number is missing',
 		});
-	} else if (persons.findIndex((person) => person.name === body.name) !== -1) {
-		return response.status(400).json({
-			error: 'name must be unique',
-		});
-	}
+	} 
+	
+	// else if (persons.findIndex((person) => person.name === body.name) !== -1) {
+	// 	return response.status(400).json({
+	// 		error: 'name must be unique',
+	// 	});
+	// }
 
-	const person = {
-		id: randomId(),
+	const person = new Person({
 		name: body.name,
 		number: body.number,
-	};
+	});
 
-	persons = [...persons, person];
+person.save().then(savedPerson => {
+	response.json(savedPerson)
+})
 
-	// console.log(persons);
-	response.json(person);
 });
 
 const PORT = process.env.PORT;
