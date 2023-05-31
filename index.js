@@ -9,13 +9,9 @@ morgan.token('body', function (req, res) {
 	return JSON.stringify(req.body);
 });
 
-// unknown endpoint
-
 const unknownEndpoint = (request, response) => {
 	response.status(404).send({ error: 'unknown endpoint' });
 };
-
-// error handler
 
 const errorHandler = (error, request, response, next) => {
 	console.error(error.message);
@@ -23,7 +19,6 @@ const errorHandler = (error, request, response, next) => {
 	if (error.name === 'CastError') {
 		return response.status(400).send({ error: 'malformatted id' });
 	}
-
 	next(error);
 };
 
@@ -66,6 +61,20 @@ app.get('/api/persons/:id/', (request, response, next) => {
 		.catch((error) => next(error));
 });
 
+app.put('/api/persons/:id/', (request, response, next) => {
+	const body = request.body
+	const person = {
+		name: body.name,
+		number: body.number,
+	}
+	Person.findByIdAndUpdate(request.params.id, person, {new: true})
+		.then((updatedPerson) => {
+			response.json(updatedPerson)
+		})
+		.catch((error) => next(error));
+});
+
+
 app.delete('/api/persons/:id/', (request, response, next) => {
 	Person.findByIdAndRemove(request.params.id)
 		.then((result) => {
@@ -92,12 +101,6 @@ app.post('/api/persons', (request, response) => {
 			error: 'number is missing',
 		});
 	}
-
-	// else if (persons.findIndex((person) => person.name === body.name) !== -1) {
-	// 	return response.status(400).json({
-	// 		error: 'name must be unique',
-	// 	});
-	// }
 
 	const person = new Person({
 		name: body.name,
